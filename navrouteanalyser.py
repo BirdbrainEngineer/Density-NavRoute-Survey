@@ -57,24 +57,43 @@ class Tortuosity:
 
 
 class Sample:
-    coordinates: tuple[float, float, float]
+    origin_coords: tuple[float, float, float]
+    dest_coords: tuple[float, float, float]
     jump_vector: tuple[float, float, float]
     distance: float
     density: float
+    centroid_coords: tuple[float, float, float]
     tort_small: Tortuosity
     tort_medium: Tortuosity
     tort_large: Tortuosity
 
     def __init__(self, coords: tuple[float, float, float], destination_coords: tuple[float, float, float], route_end_coords: tuple[float, float, float], max_jump_distance: float) -> None:
-        self.coordinates = coords
+        self.origin_coords = coords
+        self.dest_coords = destination_coords
         self.jump_vector = get_vector(coords, destination_coords)
         self.distance = math.dist( coords, destination_coords)
         self.tort_small = Tortuosity()
         self.tort_medium = Tortuosity()
         self.tort_large = Tortuosity()
-        self.density = self.get_density(route_end_coords, max_jump_distance)
+        self.density, self.centroid_coords = self.get_density_and_centroid(route_end_coords, max_jump_distance)
 
-    def get_density(self, ideal_target_vec: tuple[float, float, float], max_jump_range: float) -> float:
+    def get_density_and_centroid(self, ideal_target_vec: tuple[float, float, float], max_jump_range: float) -> tuple[float, tuple[float, float, float]]:
+        d = get_dist(get_vector(self.origin_coords, ideal_target_vec))
+        r_1 = max_jump_range
+        r_2 = get_dist(get_vector(self.dest_coords, ideal_target_vec))
+        d_1 = (d**2 + r_1**2 - r_2**2) / (2 * d)
+        d_2 = (d**2 + r_2**2 - r_1**2) / (2 * d)
+        h_1 = r_1 - d_1
+        h_2 = r_2 - d_2
+        vol_1 = (math.pi * h_1**2 * (3 * r_1 - h_1)) / 3
+        vol_2 = (math.pi * h_2**2 * (3 * r_2 - h_2)) / 3
+        vol_ex = vol_1 + vol_2
+        rho = 1 / vol_ex
+        h_c = (h_1 + h_2) / 2
+        d_c = max_jump_range - h_c
+        centroid_direction = get_unit_vector(ideal_target_vec)
+        centroid = vec_scale(centroid_direction, d_c)
+        return (rho, centroid)
 
         
 
