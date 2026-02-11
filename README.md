@@ -68,9 +68,13 @@ Both of the aforementioned methods do suffer from one major hurtle to overcome -
 ## Calculations
 ### Distance between any two stars
 To get the distance between any given two stars in the route we simply use Pythagorean theorem. Our coordinates have 3 components, therefore... 
+
 ![](readme_images/Pasted%20image%2020260209142934.png)
+
 d = sqrt((x_1 - x_2)^2 + (y_1 - y_2)^2 + (z_1 - z_2)^2)
+
 ### Maximum jump range of the vessel
+
 We will need to know the surveying vessel's jump range. Using the "Loadout" event from a player journal, it is possible to get the information about the weight, max fuel, FSD type and any engineering modifications applied to the FSD. Based on this, current maximum jump range can be calculated using the "fuel equation". 
 
 Unfortunately, while this approach would give us a very close, if not the exact current jump range of the vessel, the router seems to either be somewhat smart or there is some hidden factor at play. If we were to find the maximum jump distance in a long navroute, we would find that it likely slightly exceeds the calculated maximum jump range! Either the plotter is smart enough to know when the vessel is incapable of refuelling and therefore understands that the next jump can be longer, or there is some other weird hidden factor at play here. 
@@ -80,7 +84,9 @@ As a result, until this mystery is solved, we have to choose the maximum jump ra
 Using the largest jump distance in the navroute as the maximum jump range does come with the caveat that if the whole route lies within a sparse stellar density region, then the maximum range might be significantly smaller than the actual maximum jump range, skewing the acquired density values greatly. For that reason, for now, diligence is required when collecting data. The 3rd party application that aids in collecting this data should report the maximum jump distance it found for the generated navroute. The commander collecting the data should then verify that it is close enough to the actual maximum jump range. I **almost** arbitrarily propose a maximum jump range deviation cutoff of 0.2Ly for the moment. 
 
 **Suggestions from the galactic community on how to find the vessel's maximum jump range for any given navroute are most welcome as any error in this value is compounded by the cube!**
+
 ### Exclusion volume and density
+
 To get the density values, we need to figure out the exclusion volume. The exclusion volume is produced by two spherical domes/caps joined together. One produced by the max jump range sphere, and the other by the sphere to the route destination. This makes it relatively easy to calculate the volume.
 
 Volume of a spherical cap is given by the formula:
@@ -88,8 +94,11 @@ Volume of a spherical cap is given by the formula:
 ![](readme_images/Pasted%20image%2020260209140726.png)
 
 V = 1/3 * pi * h^2 * (3 * r - h)
+
 Where:
+
 **r** is the radius of the sphere for which the spherical cap is calculated for
+
 **h** is the height of the spherical cap from the base to the central high point of the cap, which we can find by first calculating the distance to the sphere intersection plane **d_i** with the formula:
 
 ![](readme_images/Pasted%20image%2020260209154154.png)
