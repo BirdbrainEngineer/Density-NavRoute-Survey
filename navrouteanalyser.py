@@ -18,8 +18,12 @@ class SmoothingMode(Enum):
 type Coords = tuple[float, float, float]
 
 data: dict[str, Any] = json.load(Path("test_route.json").open())
+data2: dict[str, Any] = json.load(Path("test_route2.json").open())
+data3: dict[str, Any] = json.load(Path("test_route3.json").open())
 
 max_jump_range: float = data["MaxRange"]
+max_jump_range2: float = data2["MaxRange"]
+max_jump_range3: float = data3["MaxRange"]
 
 SMOOTHING_MODE = SmoothingMode.harmonic
 
@@ -271,20 +275,34 @@ class Route:
 
 
 route = Route(max_jump_range, data["Route"])
+route2 = Route(max_jump_range2, data2["Route"])
+route3 = Route(max_jump_range3, data3["Route"])
 
 #for i, leg in enumerate(route.route):
 #    print(f"{i:<4}- rho: {round(leg.density_smoothed, 8):<20}route_dist: {leg.distance_along_route}")
 
 
+#x_axis = [sample.distance_along_route for sample in route.route]
+#y_axis = [sample.density for sample in route.route]
+y_axis_smoothed = [sample.density_smoothed for sample in route.route]
 x_axis = [sample.distance_along_route for sample in route.route]
 y_axis = [sample.density for sample in route.route]
-y_axis_smoothed = [sample.density_smoothed for sample in route.route]
+
+x_axis2 = [sample.distance_along_route for sample in route2.route]
+y_axis2 = [sample.density_smoothed for sample in route2.route]
+
+x_axis3 = [sample.distance_along_route for sample in route3.route]
+y_axis3 = [sample.density_smoothed for sample in route3.route]
 
 
 plt.figure(figsize=(18, 8))
 plt.yscale('log')
 plt.plot(x_axis, y_axis, alpha=0.25, label=f"Raw densities ({round(route.max_jump_range, 2)}ly)")
 plt.plot(x_axis, y_axis_smoothed, 'g', label='Rayleigh-distance harmonic average')
+#plt.plot(x_axis, y_axis, 'r', label=f"{round(route.max_jump_range, 2)}ly")
+#plt.plot(x_axis2, y_axis2, 'g', label=f"{round(route2.max_jump_range, 2)}ly")
+#plt.plot(x_axis3, y_axis3, 'b', label=f"{round(route3.max_jump_range, 2)}ly")
+
 plt.legend()  # Shows the labels
 plt.xlabel('Distance (ly)')
 plt.ylabel('Density (stars/ly^3)')
