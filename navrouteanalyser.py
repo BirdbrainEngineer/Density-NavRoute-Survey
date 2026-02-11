@@ -5,10 +5,6 @@ import math
 import matplotlib.pyplot as plt
 from enum import Enum, auto
 
-#CMDR Kuun Lan
-#805mAc
-#precambrian mollusc
-#cxy
 
 class SmoothingMode(Enum):
     simple = auto()
